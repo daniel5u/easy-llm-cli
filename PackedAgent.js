@@ -6,8 +6,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const openai = new OpenAI({
-  baseURL: process.env.DEEPSEEK_BASE_URL,
-  apiKey: process.env.DEEPSEEK_API_KEY
+  baseURL: process.env.EVALUATION_BASE_URL,
+  apiKey: process.env.EVALUATION_API_KEY
 });
 
 // Token统计类
@@ -248,9 +248,9 @@ class PersistentElcAgent {
 // 创建非交互式任务执行函数
 export async function executeTask(dir = process.cwd(), first_prompt, onStatusUpdate = null) {
   const agent = new PersistentElcAgent({
-    model: process.env.MODELSCOPE_MODEL,
-    apiKey: process.env.MODELSCOPE_API_KEY,
-    endpoint: process.env.MODELSCOPE_ENDPOINT,
+    model: process.env.CODER_MODEL,
+    apiKey: process.env.CODER_API_KEY,
+    endpoint: process.env.CODER_ENDPOINT,
     log: false,
     rootPath: dir,
   }, first_prompt);
@@ -332,9 +332,9 @@ export async function executeTask(dir = process.cwd(), first_prompt, onStatusUpd
 // 保持原有的交互式函数用于测试
 export async function interactiveChat(dir = process.cwd(), first_prompt) {
   const agent = new PersistentElcAgent({
-    model: process.env.MODELSCOPE_MODEL,
-    apiKey: process.env.MODELSCOPE_API_KEY,
-    endpoint: process.env.MODELSCOPE_ENDPOINT,
+    model: process.env.CODER_MODEL,
+    apiKey: process.env.CODER_API_KEY,
+    endpoint: process.env.CODER_ENDPOINT,
     log: false,
     rootPath: dir,
   }, first_prompt);

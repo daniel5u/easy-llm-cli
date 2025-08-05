@@ -1,194 +1,201 @@
-![Easy LLM CLI Screenshot](./docs/assets/openrouter.png)
+# AI批处理任务执行系统
 
-<div align="center">
+一个基于Easy LLM CLI的智能批处理系统，支持并行执行多个AI任务，自动管理API调用和资源分配。
 
-<h4>  An open-source AI agent that is compatible with multiple LLM models（a forked version of Gemini CLI）.  </h4>
+## 🚀 主要功能
 
-[English](./README.md) | [简体中文](./README.zh-CN.md)
-
-</div>
-
-This repository contains the Easy LLM CLI（[Gemini Cli](https://github.com/google-gemini/gemini-cli) version of the Fork）, a command-line AI workflow tool that connects to your
-tools, understands your code and accelerates your workflows. It supports multiple LLM providers including Gemini, OpenAI, and any custom LLM API that follows OpenAI's API format.
-
-
-With the Easy LLM CLI you can:
-
-- Query and edit large codebases using advanced LLM capabilities with large context windows.
-- Generate new apps from PDFs or sketches, using multimodal capabilities.
-- Automate operational tasks, like querying pull requests or handling complex rebases.
-- Use tools and MCP servers to connect new capabilities.
-- Configure and use your preferred LLM provider through simple environment variables.
-- Seamlessly switch between different LLM providers without changing your workflow.
-
-<hr />
-
-This plan has conducted tests on various models from different providers as well as locally deployed models across multiple dimensions, including whether they have thinking chain, whether they can complete simple tasks, whether they have tool - calling capabilities, whether they have multimodal capabilities, whether they have complex task capabilities, and whether they can count tokens. The following are the test results:
-
-| Model | COT | Simple | Tool | MCP | Complex | Multimodal | Token |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| 【Google】Gemini-2.5-pro | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| 【OpenRouter】Claude Sonnet 4 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| 【OpenRouter】Gpt-4.1 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| 【OpenRouter】Grok-4 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| 【Volcengine】Doubao-Seed-1.6 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| 【Bailian】Qwen3-Plus | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| 【Moonshot】kimi-k2 | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
-| 【Volcengine】DeepSeek-R1 | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
-| 【Siliconflow】DeepSeek-R1 | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
-| 【Volcengine】Doubao-1.5-Pro | ❌ | ✅ | ✅ | ✅ | ⚠️ | ❌ | ✅ |
-| 【Volcengine】DeepSeek-V3 | ❌ | ✅ | ✅ | ✅ | ⚠️ | ❌ | ✅ |
-| 【Bailian】Qwen3-235b-a22b | ✅ | ✅ | ✅ | ✅ | ⚠️ | ❌ | ✅ |
-| 【vLLM】Qwen2.5-7B-Instruct | ❌ | ✅ | ✅ | ✅ | ⚠️ | ❌ | ✅ |
-| 【vLLM】DeepSeek-R1-32B | ✅ | ✅ | ✅ | ✅ | ⚠️ | ❌ | ✅ |
-| 【Ollama】Qwen2.5-7B-Instruct | ❌ | ✅ | ✅ | ✅ | ⚠️ | ❌ | ✅ |
-
-## Quickstart
-
-1. **Prerequisites:** Ensure you have [Node.js version 20](https://nodejs.org/en/download) or higher installed.
-2. **Run the CLI:** Execute the following command in your terminal:
-
-   ```bash
-   npx easy-llm-cli
-   ```
-
-   Or install it with:
-
-   ```bash
-   npm install -g easy-llm-cli
-   elc
-   ```
+- **并行任务执行** - 支持多任务并发处理，提高执行效率
+- **智能任务管理** - 自动任务分配、状态监控和错误处理
+- **API资源优化** - 智能控制并发数量，避免API限制
+- **Token使用统计** - 详细记录API调用和Token消耗
+- **结果持久化** - 自动保存执行结果和统计信息
+- **环境变量配置** - 安全的API密钥管理
 
 
-## Custom LLM Configuration
 
-Easy LLM CLI supports connecting to any OpenAI-compatible LLM API. You can configure your preferred LLM using these environment variables:
+## 工作流程
+
+工作主体是调用了Easy-LLM-CLI的ElcAgent方式，封装了一个PersistantElcAgent来实现多轮对话，将任务设置到Coder Agent和Eval Agent的prompt中，并且让Eval Agent自行评估Coder Agent的任务完成情况，同时如果Coder Agent对于任务的需求不明确，Eval Agent也会自动生成提示让其继续任务。
+
+在Coder Agent上建议选择Qwen-3-coder等coding模型，在测试过程中发现DeepSeek-R1等推理模型对于工具使用的效果很差，完成任务的时间很长。
+
+在Eval Agent的选择上可以自行选择，默认使用的是DeepSeek-V3
+
+![picture](file:///Users/danielsu/Study/easy-llm-cli/picture.png)
+
+
+
+## 📋 系统组件
+
+### 核心脚本
+
+| 文件 | 功能 | 说明 |
+|------|------|------|
+| `PackedAgent.js` | AI代理封装 | 支持持久对话和任务评估 |
+| `parallel-batch.js` | 并行批处理器 | 管理并发任务执行 |
+| `run.js` | 交互式启动器 | 用户友好的命令行界面 |
+
+### 配置文件
+
+| 文件 | 用途 | 说明 |
+|------|------|------|
+| `.env` | 环境变量配置 | 存储API密钥等敏感信息 |
+| `task.json` | 任务定义文件 | 定义要执行的AI任务 |
+| `parallel_batch_results.json` | 执行结果 | 自动生成的执行报告 |
+
+## 🛠️ 快速开始
+
+### 1. 环境配置
 
 ```bash
-# Enable custom LLM support
-export USE_CUSTOM_LLM=true 
+# 复制环境变量模板
+cp .env.example .env
 
-export CUSTOM_LLM_PROVIDER="openai"  # LLM provider
-export CUSTOM_LLM_API_KEY="your-api-key"     # Your LLM provider API key
-export CUSTOM_LLM_ENDPOINT="https://api.your-llm-provider.com/v1"  # API endpoint
-export CUSTOM_LLM_MODEL_NAME="your-model-name"  # Model name
-
-# Optional parameters
-export CUSTOM_LLM_TEMPERATURE=0.7  # Temperature (default: 0)
-export CUSTOM_LLM_MAX_TOKENS=8192  # Max tokens (default: 8192)
-export CUSTOM_LLM_TOP_P=1          # Top P (default: 1)
+# 编辑配置文件，填入你的API密钥
+nano .env
 ```
 
-When these variables are set, Easy LLM CLI will use your custom LLM instead of the default Gemini model.
+环境变量配置：
+```bash
+# DeepSeek API配置
+DEEPSEEK_BASE_URL=https://api.deepseek.com
+DEEPSEEK_API_KEY=你的DeepSeek_API密钥
 
-
-## Examples
-
-Once the CLI is running, you can start interacting with Gemini from your shell.
-
-You can start a project from a new directory:
-
-```sh
-cd new-project/
-elc
-> Write me a Discord bot that answers questions using a FAQ.md file I will provide
+# ModelScope API配置  
+MODELSCOPE_MODEL=Qwen/Qwen3-Coder-480B-A35B-Instruct
+MODELSCOPE_API_KEY=你的ModelScope_API密钥
+MODELSCOPE_ENDPOINT=https://api-inference.modelscope.cn/v1
 ```
 
-Or work with an existing project:
+### 2. 定义任务
 
-```sh
-git clone https://github.com/ConardLi/easy-llm-cli
-cd easy-llm-cli
-elc
-> Give me a summary of all of the changes that went in yesterday
-```
-
-## Running in Code
-
-Easy LLM supports direct integration into your code via NPM:
-
-```javascript
-import { ElcAgent } from 'easy-llm-cli';
-
-const agent = new ElcAgent({
-  model: 'custom-llm-model-name',
-  apiKey: 'custom-llm-api-key',
-  endpoint: 'custom-llm-endpoint',
-  extension: {
-    mcpServers: {
-      chart: {
-        command: 'npx',
-        args: ['-y', '@antv/mcp-server-chart'],
-        trust: false
-      }
+创建 `task.json` 文件：
+```json
+{
+  "tasks": [
+    {
+      "dir": "./project1",
+      "first_prompt": "帮我优化这个React组件的性能"
     },
-    excludeTools: ['run_shell_command']
-  }
+    {
+      "dir": "./project2", 
+      "first_prompt": "为这个Python脚本添加错误处理"
+    },
+    {
+      "dir": "./project3",
+      "first_prompt": "重构这个Java类，提高代码可读性"
+    }
+  ]
+}
+```
+
+### 3. 执行批处理
+
+```bash
+# 交互式启动（推荐）
+node run.js
+```
+
+## ⚙️ 并发配置
+
+目前没有测试高于10的并发数，过高可能会导致API Key访问受限。  
+*同时，选择Qwen-3-Coder的原因也是其支持比较高的并发数，在测试Gemini的时候经常会出现fetch error*
+
+
+## 📊 执行监控
+
+### 实时状态
+
+```
+🚀 开始并行执行 (并发数: 3)...
+[14:30:15] 任务 1/5: 开始处理初始任务...
+[14:30:18] 任务 2/5: 第 1 轮评估中...
+✅ 任务 1 完成 (耗时: 45.12s) [1/5]
+📊 状态: completed, 迭代次数: 3
+💾 Token使用: 总计1,890 (输入1,200, 输出690) - 3次调用
+```
+
+### 结果统计
+
+执行完成后会生成详细报告：
+- 任务完成率统计
+- Token使用情况分析
+- 执行时间对比
+- 错误原因分析
+
+## 🔧 高级配置
+
+### 自定义模型
+
+在 `PackedAgent.js` 中修改模型配置：
+```javascript
+const agent = new PersistentElcAgent({
+  model: process.env.MODELSCOPE_MODEL,
+  apiKey: process.env.MODELSCOPE_API_KEY,
+  endpoint: process.env.MODELSCOPE_ENDPOINT,
+  // 其他配置...
 });
-
-const result = await agent.run('Please generate a bar chart for sales data');
-console.log(result);
 ```
 
-- View detailed API documentation: [Programmatic API](./docs/programmatic-api.md)
+### 任务评估
 
+系统使用独立的评估模型来判断任务完成状态：
+```javascript
+const evaluation = await this.TaskEvaluation();
+if (evaluation.includes('任务已完成')) {
+  // 任务完成处理
+}
+```
+## 🛡️ 安全特性
 
-### Next steps
+- ✅ 环境变量管理敏感信息
+- ✅ `.env` 文件被Git忽略
+- ✅ API密钥不暴露在代码中
+- ✅ 支持多环境配置
 
-- Learn how to [contribute to or build from the source](./CONTRIBUTING.md).
-- Explore the available **[CLI Commands](./docs/cli/commands.md)**.
-- If you encounter any issues, review the **[Troubleshooting guide](./docs/troubleshooting.md)**.
-- For more comprehensive documentation, see the [full documentation](./docs/index.md).
-- Take a look at some [popular tasks](#popular-tasks) for more inspiration.
+## 🔍 故障排除
 
-### Troubleshooting
+### 常见问题
 
-Head over to the [troubleshooting](docs/troubleshooting.md) guide if you're
-having issues.
+1. **API限制错误**
+   ```bash
+   # 降低并发数量
+   # 检查API配额
+   # 验证API密钥
+   ```
 
-## Popular tasks
+2. **任务超时**
+   ```bash
+   # 增加最大迭代次数
+   # 优化任务描述
+   # 检查网络连接
+   ```
 
-### Explore a new codebase
+3. **配置错误**
+   ```bash
+   # 验证.env文件格式
+   # 检查环境变量名称
+   # 确认API端点可访问
+   ```
 
-Start by `cd`ing into an existing or newly-cloned repository and running `elc`.
+### 调试模式
 
-```text
-> Describe the main pieces of this system's architecture.
+启用详细日志：
+```javascript
+log: true, // 在PackedAgent配置中启用
 ```
 
-```text
-> What security mechanisms are in place?
-```
+## 📚 相关文档
 
-### Work with your existing code
+- [环境变量配置](./ENV_SETUP.md) - 详细的配置说明
+- [批处理使用指南](./BATCH_README.md) - 完整的使用教程
+- [API限制说明](./docs/quota-and-pricing.md) - 各平台API限制
 
-```text
-> Implement a first draft for GitHub issue #123.
-```
+## 🤝 贡献指南
 
-```text
-> Help me migrate this codebase to the latest version of Java. Start with a plan.
-```
+欢迎提交Issue和Pull Request来改进这个批处理系统！
 
-### Automate your workflows
+---
 
-Use MCP servers to integrate your local system tools with your enterprise collaboration suite.
-
-```text
-> Make me a slide deck showing the git history from the last 7 days, grouped by feature and team member.
-```
-
-```text
-> Make a full-screen web app for a wall display to show our most interacted-with GitHub issues.
-```
-
-### Interact with your system
-
-```text
-> Convert all the images in this directory to png, and rename them to use dates from the exif data.
-```
-
-```text
-> Organize my PDF invoices by month of expenditure.
-```
+**注意**: 请确保妥善保管你的API密钥，不要将 `.env` 文件提交到版本控制系统。
 
