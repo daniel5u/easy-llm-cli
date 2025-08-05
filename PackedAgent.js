@@ -1,9 +1,13 @@
 import { ElcAgent } from 'easy-llm-cli';
 import OpenAI from "openai";
+import dotenv from 'dotenv';
+
+// 加载.env文件
+dotenv.config();
 
 const openai = new OpenAI({
-  baseURL: 'https://api.deepseek.com',
-  apiKey: 'sk-110624f89fbe41089c937edbed855742'
+  baseURL: process.env.DEEPSEEK_BASE_URL,
+  apiKey: process.env.DEEPSEEK_API_KEY
 });
 
 // Token统计类
@@ -244,9 +248,9 @@ class PersistentElcAgent {
 // 创建非交互式任务执行函数
 export async function executeTask(dir = process.cwd(), first_prompt, onStatusUpdate = null) {
   const agent = new PersistentElcAgent({
-    model: 'Qwen/Qwen3-Coder-480B-A35B-Instruct',
-    apiKey: 'ms-0948ee73-16b4-4c95-8a1c-5cdcf2afa85b',
-    endpoint: 'https://api-inference.modelscope.cn/v1',
+    model: process.env.MODELSCOPE_MODEL,
+    apiKey: process.env.MODELSCOPE_API_KEY,
+    endpoint: process.env.MODELSCOPE_ENDPOINT,
     log: false,
     rootPath: dir,
   }, first_prompt);
@@ -328,9 +332,9 @@ export async function executeTask(dir = process.cwd(), first_prompt, onStatusUpd
 // 保持原有的交互式函数用于测试
 export async function interactiveChat(dir = process.cwd(), first_prompt) {
   const agent = new PersistentElcAgent({
-    model: 'Qwen/Qwen3-Coder-480B-A35B-Instruct',
-    apiKey: 'ms-0948ee73-16b4-4c95-8a1c-5cdcf2afa85b',
-    endpoint: 'https://api-inference.modelscope.cn/v1',
+    model: process.env.MODELSCOPE_MODEL,
+    apiKey: process.env.MODELSCOPE_API_KEY,
+    endpoint: process.env.MODELSCOPE_ENDPOINT,
     log: false,
     rootPath: dir,
   }, first_prompt);

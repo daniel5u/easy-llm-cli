@@ -39,3 +39,4 @@ packages/cli/src/generated/
 
 
 example-usage.ts
+.env
