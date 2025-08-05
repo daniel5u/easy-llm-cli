@@ -1,0 +1,44 @@
+{
+  "tasks": [
+    {
+      "dir": "./examples",
+      "first_prompt": "用 Python 写一个 30 行内的猜数字游戏：电脑随机生成 1~10 的整数，用户输入数字，程序立即提示“大了/小了/猜对了”并结束。"
+    },
+    {
+      "dir": "./examples",
+      "first_prompt": "用 HTML+JS 写一个 50 行内的加法计算器：两个输入框、一个“=”按钮，点击后显示两数之和。"
+    },
+    {
+      "dir": "./examples",
+      "first_prompt": "用 Python 写一个 40 行内的命令行待办清单：用户输入 add <任务> 把任务追加到 todos.txt；输入 list 查看所有任务。"
+    },
+    {
+      "dir": "./examples",
+      "first_prompt": "用 JavaScript 写一个 60 行内的贪吃蛇简化版：画布上只有 1 个食物，蛇每吃到一次得 1 分并结束游戏，方向键控制移动。"
+    },
+    {
+      "dir": "./examples",
+      "first_prompt": "用 Python 写一个 30 行内的脚本，运行时打印当前目录下所有文件和文件夹的名称即可。"
+    },
+    {
+      "dir": "./examples",
+      "first_prompt": "用 Python 写一个 40 行内的聊天机器人：用户输入“时间”则返回当前时间，输入其他文字则回复“我不懂”。"
+    },
+    {
+      "dir": "./examples",
+      "first_prompt": "用 JavaScript 写一个 30 行内的密码生成器：用户点击按钮，生成并显示 8 位随机数字字母混合密码。"
+    },
+    {
+      "dir": "./examples",
+      "first_prompt": "用 HTML+JS 写一个 50 行内的图片轮播：页面加载后自动每 2 秒切换 3 张固定图片，循环播放。"
+    },
+    {
+      "dir": "./examples",
+      "first_prompt": "用 Python+tkinter 写一个 50 行内的文本框：窗口中有一个可编辑文本区，关闭窗口时把内容自动保存到 note.txt。"
+    },
+    {
+      "dir": "./examples",
+      "first_prompt": "用 Python 写一个 40 行内的音乐播放器：给定本地 mp3 文件路径，运行后播放一次并退出。"
+    }
+  ]
+}

@@ -12,6 +12,9 @@
     "type": "git",
     "url": "git+https://github.com/ConardLi/easy-llm-cli.git"
   },
+  "rules": {
+    "no-console": "off"
+  },
   "config": {
     "sandboxImageUri": "xx:0.1.0"
   },
@@ -88,6 +91,7 @@
     "yargs": "^17.7.2"
   },
   "dependencies": {
-    "@google/genai": "^1.9.0"
+    "@google/genai": "^1.9.0",
+    "openai": "^5.11.0"
   }
 }
