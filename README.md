@@ -75,15 +75,15 @@ CODER_ENDPOINT=https://api-inference.modelscope.cn/v1
   "tasks": [
     {
       "dir": "./project1",
-      "first_prompt": "帮我优化这个React组件的性能"
+      "first_prompt": "帮我写一个本地查询天气的网页"
     },
     {
       "dir": "./project2", 
-      "first_prompt": "为这个Python脚本添加错误处理"
+      "first_prompt": "帮我写一个图书管理系统"
     },
     {
       "dir": "./project3",
-      "first_prompt": "重构这个Java类，提高代码可读性"
+      "first_prompt": "帮我写一个贪吃蛇游戏"
     }
   ]
 }
