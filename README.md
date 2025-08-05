@@ -57,14 +57,14 @@ nano .env
 
 环境变量配置：
 ```bash
-# DeepSeek API配置
-DEEPSEEK_BASE_URL=https://api.deepseek.com
-DEEPSEEK_API_KEY=你的DeepSeek_API密钥
+# Eval Agent配置
+EVALUATION_BASE_URL=https://api.deepseek.com(可自行更改)
+EVALUATION_API_KEY=你的DeepSeek_API密钥
 
-# ModelScope API配置  
-MODELSCOPE_MODEL=Qwen/Qwen3-Coder-480B-A35B-Instruct
-MODELSCOPE_API_KEY=你的ModelScope_API密钥
-MODELSCOPE_ENDPOINT=https://api-inference.modelscope.cn/v1
+# Coder Agent配置  
+CODER_MODEL=Qwen/Qwen3-Coder-480B-A35B-Instruct（可自行更改，建议使用Coder模型）
+CODER_API_KEY=你的ModelScope_API密钥
+CODER_ENDPOINT=https://api-inference.modelscope.cn/v1
 ```
 
 ### 2. 定义任务
